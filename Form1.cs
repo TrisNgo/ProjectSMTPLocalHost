@@ -43,7 +43,18 @@ namespace ProjectSMTPLocalHost
             string text = "S: " + input + "\n";
             txtBoxGetSer.Text += text;
         }
-
+        //use to hide and show password. Password is auto hide by default using property UseSystemPasswordChar = true
+        private void checkBoxShowPwd_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxShowPwd.Checked)
+            {
+                txtBoxPwd.UseSystemPasswordChar = false;
+            }
+            else
+            {
+                txtBoxPwd.UseSystemPasswordChar = true;
+            }
+        }
         private void btnSend_Click(object sender, EventArgs e)
         {
             //if txtBoxSendSer and txtBoxGetSer have already text on previous sending, clear it
@@ -74,51 +85,62 @@ namespace ProjectSMTPLocalHost
             addTextToBox2(data);
             sw.WriteLine(data);
             sw.Flush();
+
             data = "AUTH LOGIN";
             addTextToBox2(data);
             sw.WriteLine(data);
             sw.Flush();
+
             data = inforToBase64(txtBoxFrom.Text);
             addTextToBox2(data);
             sw.WriteLine(data);
             sw.Flush();
+
             data = inforToBase64(txtBoxPwd.Text);
             addTextToBox2(data);
             sw.WriteLine(data);
             sw.Flush();
+
             data = "MAIL FROM:<" + txtBoxFrom.Text + ">";
             addTextToBox2(data);
             sw.WriteLine(data);
             sw.Flush();
+
             data = "RCPT TO:<" + txtBoxTo.Text + ">";
             addTextToBox2(data);
             sw.WriteLine(data);
             sw.Flush();
+
             data = "DATA";
             addTextToBox2(data);
             sw.WriteLine(data);
             sw.Flush();
+
             data = "FROM:<" + txtBoxFrom.Text + ">";
             addTextToBox2(data);
             sw.WriteLine(data);
             sw.Flush();
+
             data = "TO:<" + txtBoxTo.Text + ">";
             addTextToBox2(data);
             sw.WriteLine(data);
             sw.Flush();
             
-            data = "Content-Type: text/plain; charset=\"UTF-8\"";//this make vietnamese mail can be sent
+            data = "Content-Type: text/plain; charset=\"UTF-8\"";//this make Vietnamese mail can be sent
             addTextToBox2(data);
             sw.WriteLine(data);
             sw.Flush();
+
             data = "subject: " + txtBoxSubject.Text;
             addTextToBox2(data);
             sw.WriteLine(data);
             sw.Flush();
+
             addTextToBox2("");
             sw.WriteLine();
             sw.Flush();
             data = richTBBody.Text;
+
             if (data.Contains("\n"))
             {
                 string[] newData = data.Split('\n');
@@ -138,9 +160,11 @@ namespace ProjectSMTPLocalHost
             addTextToBox2("");
             sw.WriteLine();
             sw.Flush();
+
             addTextToBox2(".");
             sw.WriteLine(".");
             sw.Flush();
+
             data = "QUIT";
             addTextToBox2(data);
             sw.WriteLine(data);
@@ -166,5 +190,6 @@ namespace ProjectSMTPLocalHost
                 addTextToBox1(mess);
             }
         }
+
     }
 }

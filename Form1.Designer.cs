@@ -43,6 +43,7 @@ namespace ProjectSMTPLocalHost
             this.btnSend = new System.Windows.Forms.Button();
             this.txtBoxGetSer = new System.Windows.Forms.RichTextBox();
             this.txtBoxSendSer = new System.Windows.Forms.RichTextBox();
+            this.checkBoxShowPwd = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // lblApp
@@ -121,6 +122,7 @@ namespace ProjectSMTPLocalHost
             this.txtBoxPwd.Name = "txtBoxPwd";
             this.txtBoxPwd.Size = new System.Drawing.Size(227, 29);
             this.txtBoxPwd.TabIndex = 8;
+            this.txtBoxPwd.UseSystemPasswordChar = true;
             // 
             // txtBoxTo
             // 
@@ -176,11 +178,23 @@ namespace ProjectSMTPLocalHost
             this.txtBoxSendSer.Text = "";
             this.txtBoxSendSer.WordWrap = false;
             // 
+            // checkBoxShowPwd
+            // 
+            this.checkBoxShowPwd.AutoSize = true;
+            this.checkBoxShowPwd.Location = new System.Drawing.Point(735, 121);
+            this.checkBoxShowPwd.Name = "checkBoxShowPwd";
+            this.checkBoxShowPwd.Size = new System.Drawing.Size(101, 17);
+            this.checkBoxShowPwd.TabIndex = 17;
+            this.checkBoxShowPwd.Text = "Show password";
+            this.checkBoxShowPwd.UseVisualStyleBackColor = true;
+            this.checkBoxShowPwd.CheckedChanged += new System.EventHandler(this.checkBoxShowPwd_CheckedChanged);
+            // 
             // FrmSmtpLocal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1190, 885);
+            this.Controls.Add(this.checkBoxShowPwd);
             this.Controls.Add(this.txtBoxSendSer);
             this.Controls.Add(this.txtBoxGetSer);
             this.Controls.Add(this.btnSend);
@@ -219,6 +233,7 @@ namespace ProjectSMTPLocalHost
         private System.Windows.Forms.Button btnSend;
         private System.Windows.Forms.RichTextBox txtBoxGetSer;
         private System.Windows.Forms.RichTextBox txtBoxSendSer;
+        private System.Windows.Forms.CheckBox checkBoxShowPwd;
     }
 }
 
