@@ -39,10 +39,10 @@ namespace ProjectSMTPLocalHost
             this.txtBoxPwd = new System.Windows.Forms.TextBox();
             this.txtBoxTo = new System.Windows.Forms.TextBox();
             this.txtBoxSubject = new System.Windows.Forms.TextBox();
-            this.rTxtBoxBody = new System.Windows.Forms.RichTextBox();
+            this.richTBBody = new System.Windows.Forms.RichTextBox();
             this.btnSend = new System.Windows.Forms.Button();
-            this.richTBsvReply = new System.Windows.Forms.RichTextBox();
-            this.richTBSendSv = new System.Windows.Forms.RichTextBox();
+            this.txtBoxGetSer = new System.Windows.Forms.RichTextBox();
+            this.txtBoxSendSer = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // lblApp
@@ -138,14 +138,14 @@ namespace ProjectSMTPLocalHost
             this.txtBoxSubject.Size = new System.Drawing.Size(850, 29);
             this.txtBoxSubject.TabIndex = 10;
             // 
-            // rTxtBoxBody
+            // richTBBody
             // 
-            this.rTxtBoxBody.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rTxtBoxBody.Location = new System.Drawing.Point(110, 236);
-            this.rTxtBoxBody.Name = "rTxtBoxBody";
-            this.rTxtBoxBody.Size = new System.Drawing.Size(847, 284);
-            this.rTxtBoxBody.TabIndex = 11;
-            this.rTxtBoxBody.Text = "";
+            this.richTBBody.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTBBody.Location = new System.Drawing.Point(110, 236);
+            this.richTBBody.Name = "richTBBody";
+            this.richTBBody.Size = new System.Drawing.Size(847, 284);
+            this.richTBBody.TabIndex = 11;
+            this.richTBBody.Text = "";
             // 
             // btnSend
             // 
@@ -158,33 +158,33 @@ namespace ProjectSMTPLocalHost
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
-            // richTBsvReply
+            // txtBoxGetSer
             // 
-            this.richTBsvReply.Location = new System.Drawing.Point(114, 551);
-            this.richTBsvReply.Name = "richTBsvReply";
-            this.richTBsvReply.Size = new System.Drawing.Size(412, 308);
-            this.richTBsvReply.TabIndex = 15;
-            this.richTBsvReply.Text = "";
-            this.richTBsvReply.WordWrap = false;
+            this.txtBoxGetSer.Location = new System.Drawing.Point(114, 551);
+            this.txtBoxGetSer.Name = "txtBoxGetSer";
+            this.txtBoxGetSer.Size = new System.Drawing.Size(412, 308);
+            this.txtBoxGetSer.TabIndex = 15;
+            this.txtBoxGetSer.Text = "";
+            this.txtBoxGetSer.WordWrap = false;
             // 
-            // richTBSendSv
+            // txtBoxSendSer
             // 
-            this.richTBSendSv.Location = new System.Drawing.Point(547, 551);
-            this.richTBSendSv.Name = "richTBSendSv";
-            this.richTBSendSv.Size = new System.Drawing.Size(410, 308);
-            this.richTBSendSv.TabIndex = 16;
-            this.richTBSendSv.Text = "";
-            this.richTBSendSv.WordWrap = false;
+            this.txtBoxSendSer.Location = new System.Drawing.Point(547, 551);
+            this.txtBoxSendSer.Name = "txtBoxSendSer";
+            this.txtBoxSendSer.Size = new System.Drawing.Size(410, 308);
+            this.txtBoxSendSer.TabIndex = 16;
+            this.txtBoxSendSer.Text = "";
+            this.txtBoxSendSer.WordWrap = false;
             // 
             // FrmSmtpLocal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1190, 885);
-            this.Controls.Add(this.richTBSendSv);
-            this.Controls.Add(this.richTBsvReply);
+            this.Controls.Add(this.txtBoxSendSer);
+            this.Controls.Add(this.txtBoxGetSer);
             this.Controls.Add(this.btnSend);
-            this.Controls.Add(this.rTxtBoxBody);
+            this.Controls.Add(this.richTBBody);
             this.Controls.Add(this.txtBoxSubject);
             this.Controls.Add(this.txtBoxTo);
             this.Controls.Add(this.txtBoxPwd);
@@ -196,6 +196,7 @@ namespace ProjectSMTPLocalHost
             this.Controls.Add(this.lblFrom);
             this.Controls.Add(this.lblApp);
             this.Name = "FrmSmtpLocal";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -214,10 +215,10 @@ namespace ProjectSMTPLocalHost
         private System.Windows.Forms.TextBox txtBoxPwd;
         private System.Windows.Forms.TextBox txtBoxTo;
         private System.Windows.Forms.TextBox txtBoxSubject;
-        private System.Windows.Forms.RichTextBox rTxtBoxBody;
+        private System.Windows.Forms.RichTextBox richTBBody;
         private System.Windows.Forms.Button btnSend;
-        private System.Windows.Forms.RichTextBox richTBsvReply;
-        private System.Windows.Forms.RichTextBox richTBSendSv;
+        private System.Windows.Forms.RichTextBox txtBoxGetSer;
+        private System.Windows.Forms.RichTextBox txtBoxSendSer;
     }
 }
 
