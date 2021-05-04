@@ -178,6 +178,7 @@ namespace ProjectSMTPLocalHost
             this.btnSend.TabIndex = 14;
             this.btnSend.Text = "SEND";
             this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
             // FrmSmtpLocal
             // 
