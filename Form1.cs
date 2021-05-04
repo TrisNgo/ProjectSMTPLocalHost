@@ -34,7 +34,7 @@ namespace ProjectSMTPLocalHost
                 this.iPEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 465);//Port 465: smtp có mã hóa, SMTPS
                 this.tcpClient.Connect(iPEndPoint);
                 this.networkStream = tcpClient.GetStream();
-                //
+                
             }
             catch
             {
