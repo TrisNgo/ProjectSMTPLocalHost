@@ -40,9 +40,9 @@ namespace ProjectSMTPLocalHost
             this.txtBoxTo = new System.Windows.Forms.TextBox();
             this.txtBoxSubject = new System.Windows.Forms.TextBox();
             this.rTxtBoxBody = new System.Windows.Forms.RichTextBox();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.listView2 = new System.Windows.Forms.ListView();
             this.btnSend = new System.Windows.Forms.Button();
+            this.richTBsvReply = new System.Windows.Forms.RichTextBox();
+            this.richTBSendSv = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // lblApp
@@ -147,28 +147,6 @@ namespace ProjectSMTPLocalHost
             this.rTxtBoxBody.TabIndex = 11;
             this.rTxtBoxBody.Text = "";
             // 
-            // listView1
-            // 
-            this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(108, 558);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(398, 297);
-            this.listView1.TabIndex = 12;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.List;
-            // 
-            // listView2
-            // 
-            this.listView2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listView2.HideSelection = false;
-            this.listView2.Location = new System.Drawing.Point(559, 558);
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(398, 297);
-            this.listView2.TabIndex = 13;
-            this.listView2.UseCompatibleStateImageBehavior = false;
-            this.listView2.View = System.Windows.Forms.View.List;
-            // 
             // btnSend
             // 
             this.btnSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -180,14 +158,30 @@ namespace ProjectSMTPLocalHost
             this.btnSend.UseVisualStyleBackColor = true;
             this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
+            // richTBsvReply
+            // 
+            this.richTBsvReply.Location = new System.Drawing.Point(114, 551);
+            this.richTBsvReply.Name = "richTBsvReply";
+            this.richTBsvReply.Size = new System.Drawing.Size(397, 308);
+            this.richTBsvReply.TabIndex = 15;
+            this.richTBsvReply.Text = "";
+            // 
+            // richTBSendSv
+            // 
+            this.richTBSendSv.Location = new System.Drawing.Point(560, 551);
+            this.richTBSendSv.Name = "richTBSendSv";
+            this.richTBSendSv.Size = new System.Drawing.Size(397, 308);
+            this.richTBSendSv.TabIndex = 16;
+            this.richTBSendSv.Text = "";
+            // 
             // FrmSmtpLocal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1190, 885);
+            this.Controls.Add(this.richTBSendSv);
+            this.Controls.Add(this.richTBsvReply);
             this.Controls.Add(this.btnSend);
-            this.Controls.Add(this.listView2);
-            this.Controls.Add(this.listView1);
             this.Controls.Add(this.rTxtBoxBody);
             this.Controls.Add(this.txtBoxSubject);
             this.Controls.Add(this.txtBoxTo);
@@ -219,9 +213,9 @@ namespace ProjectSMTPLocalHost
         private System.Windows.Forms.TextBox txtBoxTo;
         private System.Windows.Forms.TextBox txtBoxSubject;
         private System.Windows.Forms.RichTextBox rTxtBoxBody;
-        private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.ListView listView2;
         private System.Windows.Forms.Button btnSend;
+        private System.Windows.Forms.RichTextBox richTBsvReply;
+        private System.Windows.Forms.RichTextBox richTBSendSv;
     }
 }
 
