@@ -162,17 +162,19 @@ namespace ProjectSMTPLocalHost
             // 
             this.richTBsvReply.Location = new System.Drawing.Point(114, 551);
             this.richTBsvReply.Name = "richTBsvReply";
-            this.richTBsvReply.Size = new System.Drawing.Size(397, 308);
+            this.richTBsvReply.Size = new System.Drawing.Size(412, 308);
             this.richTBsvReply.TabIndex = 15;
             this.richTBsvReply.Text = "";
+            this.richTBsvReply.WordWrap = false;
             // 
             // richTBSendSv
             // 
-            this.richTBSendSv.Location = new System.Drawing.Point(560, 551);
+            this.richTBSendSv.Location = new System.Drawing.Point(547, 551);
             this.richTBSendSv.Name = "richTBSendSv";
-            this.richTBSendSv.Size = new System.Drawing.Size(397, 308);
+            this.richTBSendSv.Size = new System.Drawing.Size(410, 308);
             this.richTBSendSv.TabIndex = 16;
             this.richTBSendSv.Text = "";
+            this.richTBSendSv.WordWrap = false;
             // 
             // FrmSmtpLocal
             // 
