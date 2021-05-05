@@ -67,11 +67,11 @@ namespace ProjectSMTPLocalHost
                 MessageBox.Show("Chưa điền các thông tin tài khoản gửi và nhận. Nhập lại");
                 return false;
             }
-            else if(!strFrom.Contains('@') || !strTo.Contains('@') || RgxEmail.IsMatch(strFrom) || RgxEmail.IsMatch(strTo))
+            else if (!strFrom.Contains('@') || !strTo.Contains('@') || RgxEmail.IsMatch(strFrom) || RgxEmail.IsMatch(strTo))
             {
                 MessageBox.Show("Mail tài khoảng gửi và nhận đã nhập sai. Nhập lại");
                 return false;
-            }   
+            }
             return true;
         }
         private void btnSend_Click(object sender, EventArgs e)
