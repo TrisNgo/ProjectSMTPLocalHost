@@ -20,6 +20,7 @@ namespace ProjectSMTPLocalHost
         TcpClient tcpClient;
         IPAddress iPAddress;
         IPEndPoint iPEndPoint;
+        //khởi tạo 2 thread
         Thread authenThd;
         Thread listenThd;
 
@@ -48,7 +49,7 @@ namespace ProjectSMTPLocalHost
             txtBoxSendSer.Text += text;
         }
 
-
+        //kiểm tra authen cũng như xuất thông tin lên txtBoxGetSer
         private void authenCheck(string input)
         {
             string text = "S: " + input + "\n";
@@ -147,11 +148,19 @@ namespace ProjectSMTPLocalHost
             sr = new StreamReader(tcpClient.GetStream());
             sw = new StreamWriter(tcpClient.GetStream());
 
-            //run thread to listen a reply from mailserver
+            //run thread to listen a reply from mailserver and also check authen correct or not from server
             CheckForIllegalCrossThreadCalls = false;
-            authenThd = new Thread(new ThreadStart(authenMess));
-            authenThd.IsBackground = true;
-            authenThd.Start();
+            try
+            {
+                authenThd = new Thread(new ThreadStart(authenMess));
+                authenThd.IsBackground = true;
+                authenThd.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Xuất hiện lỗi:" + ex.ToString(), " Không gửi mail được. Vui lòng thử lại sau", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             //get mail domain
             int index = txtBoxFrom.Text.Trim().IndexOf('@');
             string domain = txtBoxFrom.Text.Trim().Substring(index + 1);
@@ -189,9 +198,18 @@ namespace ProjectSMTPLocalHost
                 authenThd.Join();
                 if (isAuthen)
                 {
-                    listenThd = new Thread(new ThreadStart(getMess));
-                    listenThd.IsBackground = true;
-                    listenThd.Start();
+                    //nếu xác thực thành công mới gọi thread khác để nhận thông điệp tiếp
+                    try
+                    {
+                        listenThd = new Thread(new ThreadStart(getMess));
+                        listenThd.IsBackground = true;
+                        listenThd.Start();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Xuất hiện lỗi:" + ex.ToString(), " Không gửi mail được. Vui lòng thử lại sau", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
 
                     data = "DATA";
                     addTextToBox2(data);
@@ -255,6 +273,7 @@ namespace ProjectSMTPLocalHost
                 authenThd.Abort();
                 sw.Close();
                 sr.Close();
+                tcpClient.Close();
             }
             catch (Exception ex)
             {
@@ -271,7 +290,7 @@ namespace ProjectSMTPLocalHost
             {
                 string mess = "";
                 mess = sr.ReadLine();
-                if (string.IsNullOrEmpty(mess))
+                if (string.IsNullOrEmpty(mess))//if server do not send any message(serverproblem) ,break it and stop thread, tcp connection
                 {
                     tcpClient.Close();
                     break;
@@ -288,7 +307,7 @@ namespace ProjectSMTPLocalHost
             {
                 string mess = "";
                 mess = sr.ReadLine();
-                if (string.IsNullOrEmpty(mess))
+                if (string.IsNullOrEmpty(mess))//if server do not send any message(serverproblem) ,break it and stop thread, tcp connection
                 {
                     tcpClient.Close();
                     break;
