@@ -20,9 +20,17 @@ namespace ProjectSMTPLocalHost
         TcpClient tcpClient;
         IPAddress iPAddress;
         IPEndPoint iPEndPoint;
+        Thread authenThd;
+        Thread listenThd;
 
         StreamReader sr;
         StreamWriter sw;
+
+        //Biến global isAuthen dùng để kiểm tra việc xác thực có Ok không
+        //Biến stop dùng để ra tính hiệu cho việc ngừng thread
+        bool isAuthen = true;
+        bool stop = false;
+
         public FrmSmtpLocal()
         {
             InitializeComponent();
@@ -39,10 +47,50 @@ namespace ProjectSMTPLocalHost
             string text = "C: " + input + "\n";
             txtBoxSendSer.Text += text;
         }
+
+
+        private void authenCheck(string input)
+        {
+            string text = "S: " + input + "\n";
+            txtBoxGetSer.Text += text;
+            if (input.Contains("Authentication"))
+            {
+                if (input.Contains("failed") || input.Contains("invalid") || input.Contains("Bad") || input.Contains("Unrecognized") || input.Contains("required"))
+                {
+
+                    stop = true;
+                    isAuthen = false;
+                }
+            }
+            else if ((input.Contains("Sender") && stop != true))
+            {
+                if (input.Contains("unknown"))
+                {
+                    isAuthen = false;
+                    stop = true;
+                }
+            }
+            else if ((input.Contains("Recipient") && stop != true))
+            {
+                if (input.Contains("unknown"))
+                {
+                    isAuthen = false;
+                }
+                //Điều kiện Recipient được kiểm tra cuối cùng nên cho dù có hợp lệ hay không thì stop vẫn phải bằng true để dừng lại
+                stop = true;
+            }
+
+        }
+
         private void addTextToBox1(string input)
         {
             string text = "S: " + input + "\n";
             txtBoxGetSer.Text += text;
+            if (input.Contains("saved"))
+            {
+                MessageBox.Show("Gửi mail thành công", "Thông báo");
+                listenThd.Abort();
+            }
         }
         //use to hide and show password. Password is auto hide by default using property UseSystemPasswordChar = true
         private void checkBoxShowPwd_CheckedChanged(object sender, EventArgs e)
@@ -69,11 +117,18 @@ namespace ProjectSMTPLocalHost
             }
             else if (!strFrom.Contains('@') || !strTo.Contains('@') || RgxEmail.IsMatch(strFrom) || RgxEmail.IsMatch(strTo))
             {
-                MessageBox.Show("Mail tài khoảng gửi và nhận đã nhập sai. Nhập lại");
+                MessageBox.Show("Mail tài khoản gửi và nhận đã nhập sai. Nhập lại");
                 return false;
             }
             return true;
         }
+
+        private void sendMess(string data)
+        {
+            sw.WriteLine(data);
+            sw.Flush();
+        }
+
         private void btnSend_Click(object sender, EventArgs e)
         {
             //if txtBoxSendSer and txtBoxGetSer have already text on previous sending, clear it
@@ -94,10 +149,9 @@ namespace ProjectSMTPLocalHost
 
             //run thread to listen a reply from mailserver
             CheckForIllegalCrossThreadCalls = false;
-            Thread listenThd = new Thread(new ThreadStart(getMess));
-            listenThd.IsBackground = true;
-            listenThd.Start();
-
+            authenThd = new Thread(new ThreadStart(authenMess));
+            authenThd.IsBackground = true;
+            authenThd.Start();
             //get mail domain
             int index = txtBoxFrom.Text.Trim().IndexOf('@');
             string domain = txtBoxFrom.Text.Trim().Substring(index + 1);
@@ -107,101 +161,123 @@ namespace ProjectSMTPLocalHost
                 string data = "EHLO " + domain;
 
                 addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
+                sendMess(data);
 
                 data = "AUTH LOGIN";
                 addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
+                sendMess(data);
 
                 data = inforToBase64(txtBoxFrom.Text);
                 addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
+                sendMess(data);
 
                 data = inforToBase64(txtBoxPwd.Text);
                 addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
+                sendMess(data);
+
+
 
                 data = "MAIL FROM:<" + txtBoxFrom.Text + ">";
                 addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
+                sendMess(data);
 
                 data = "RCPT TO:<" + txtBoxTo.Text + ">";
                 addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
+                sendMess(data);
 
-                data = "DATA";
-                addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
-
-                data = "FROM:<" + txtBoxFrom.Text + ">";
-                addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
-
-                data = "TO:<" + txtBoxTo.Text + ">";
-                addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
-
-                data = "Content-Type: text/plain; charset=\"UTF-8\"";//this make Vietnamese mail can be sent
-                addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
-
-                data = "subject: " + txtBoxSubject.Text;
-                addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
-
-                addTextToBox2("");
-                sw.WriteLine();
-                sw.Flush();
-                data = richTBBody.Text;
-
-                if (data.Contains("\n"))
+                //Đợi việc xác thực xong mới gửi mail
+                authenThd.Join();
+                if (isAuthen)
                 {
-                    string[] newData = data.Split('\n');
-                    foreach (string stringLine in newData)
+                    listenThd = new Thread(new ThreadStart(getMess));
+                    listenThd.IsBackground = true;
+                    listenThd.Start();
+
+                    data = "DATA";
+                    addTextToBox2(data);
+                    sendMess(data);
+
+                    data = "FROM:<" + txtBoxFrom.Text + ">";
+                    addTextToBox2(data);
+                    sendMess(data);
+
+                    data = "TO:<" + txtBoxTo.Text + ">";
+                    addTextToBox2(data);
+                    sendMess(data);
+
+                    data = "Content-Type: text/plain; charset=\"UTF-8\"";//this make Vietnamese mail can be sent
+                    addTextToBox2(data);
+                    sendMess(data);
+
+                    data = "subject: " + txtBoxSubject.Text;
+                    addTextToBox2(data);
+                    sendMess(data);
+
+                    addTextToBox2("");
+                    sendMess("");
+                    data = richTBBody.Text;
+
+                    if (data.Contains("\n"))
                     {
-                        addTextToBox2(stringLine);
-                        sw.WriteLine(stringLine);
-                        sw.Flush();
+                        string[] newData = data.Split('\n');
+                        foreach (string stringLine in newData)
+                        {
+                            addTextToBox2(stringLine);
+                            sendMess(stringLine);
+                        }
                     }
+                    else
+                    {
+                        addTextToBox2(data);
+                        sendMess(data);
+                    }
+                    addTextToBox2("");
+                    sendMess("");
+
+                    addTextToBox2(".");
+                    sendMess(".");
+
+                    data = "QUIT";
+                    addTextToBox2(data);
+                    sendMess(data);
+
+                    //Đợi máy chủ trả về kết quả xong, tránh trường hợp máy chủ chưa trả về xong mà xuống dưới đã đóng Stream
+                    listenThd.Join();
                 }
                 else
                 {
-                    addTextToBox2(data);
-                    sw.WriteLine(data);
-                    sw.Flush();
+                    MessageBox.Show("Xác thực không thành công, Mail không gửi được!", "Lỗi xác thực");
                 }
-                addTextToBox2("");
-                sw.WriteLine();
-                sw.Flush();
 
-                addTextToBox2(".");
-                sw.WriteLine(".");
-                sw.Flush();
-
-                data = "QUIT";
-                addTextToBox2(data);
-                sw.WriteLine(data);
-                sw.Flush();
-
-                MessageBox.Show("Gửi mail thành công", "Thông báo");
-                sr.Close();
+                //Cho các giá trị về mặc định để chuẩn bị cho lần gửi mail tiếp theo
+                stop = false;
+                isAuthen = true;
+                authenThd.Abort();
                 sw.Close();
+                sr.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Chi tiết kỹ thuật:" + ex.ToString(), "Xuất hiện lỗi. Không gửi mail được. Vui lòng thử lại sau", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+        }
+
+        //Hàm kiểm tra xem server có xác thực được thông tin của user không
+        private void authenMess()
+        {
+            //get reply message from mailserver
+            while (true)
+            {
+                string mess = "";
+                mess = sr.ReadLine();
+                if (string.IsNullOrEmpty(mess))
+                {
+                    tcpClient.Close();
+                    break;
+                }
+                authenCheck(mess);
+                if (stop == true) break;
             }
         }
 
