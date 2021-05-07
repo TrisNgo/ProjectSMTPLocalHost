@@ -31,6 +31,7 @@ namespace ProjectSMTPLocalHost
         //Biến stop dùng để ra tính hiệu cho việc ngừng thread
         bool isAuthen = true;
         bool stop = false;
+        int count = 0;
 
         public FrmSmtpLocal()
         {
@@ -54,33 +55,22 @@ namespace ProjectSMTPLocalHost
         {
             string text = "S: " + input + "\n";
             txtBoxGetSer.Text += text;
-            if (input.Contains("Authentication"))
+            string statusCode = input.Substring(0, 3);
+            if ((Int32.Parse(statusCode) >= 500) && (Int32.Parse(statusCode) < 600))
             {
-                if (input.Contains("failed") || input.Contains("invalid") || input.Contains("Bad") || input.Contains("Unrecognized") || input.Contains("required"))
-                {
-
-                    stop = true;
-                    isAuthen = false;
-                }
-            }
-            else if ((input.Contains("Sender") && stop != true))
-            {
-                if (input.Contains("unknown"))
-                {
-                    isAuthen = false;
-                    stop = true;
-                }
-            }
-            else if ((input.Contains("Recipient") && stop != true))
-            {
-                if (input.Contains("unknown"))
-                {
-                    isAuthen = false;
-                }
-                //Điều kiện Recipient được kiểm tra cuối cùng nên cho dù có hợp lệ hay không thì stop vẫn phải bằng true để dừng lại
                 stop = true;
+                isAuthen = false;
+                return;
             }
-
+            else
+            {
+                count = count + 1;
+            }
+            if (count == 13)
+            {
+                stop = true;
+                return;
+            }
         }
 
         private void addTextToBox1(string input)
@@ -270,6 +260,7 @@ namespace ProjectSMTPLocalHost
                 //Cho các giá trị về mặc định để chuẩn bị cho lần gửi mail tiếp theo
                 stop = false;
                 isAuthen = true;
+                count = 0;
                 authenThd.Abort();
                 sw.Close();
                 sr.Close();
