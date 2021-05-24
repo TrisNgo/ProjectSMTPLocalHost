@@ -306,6 +306,5 @@ namespace ProjectSMTPLocalHost
                 addTextToBox1(mess);
             }
         }
-
     }
 }
