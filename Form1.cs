@@ -32,6 +32,9 @@ namespace ProjectSMTPLocalHost
         bool isAuthen = true;
         bool stop = false;
         int count = 0;
+        string[] filePath = new string[10];
+        int index = 0;
+        string[] fileName = new string[10];
 
         public FrmSmtpLocal()
         {
@@ -39,9 +42,16 @@ namespace ProjectSMTPLocalHost
         }
         private string inforToBase64(string input)
         {
-            byte[] inputToBytes = System.Text.ASCIIEncoding.ASCII.GetBytes(input);
+            byte[] inputToBytes = System.Text.ASCIIEncoding.UTF8.GetBytes(input);
             string encodedInput = System.Convert.ToBase64String(inputToBytes);
             return encodedInput;
+        }
+
+        private string fileToBase64(string path)
+        {
+            Byte[] bytes = File.ReadAllBytes(path);
+            String file = Convert.ToBase64String(bytes);
+            return file;
         }
 
         private void addTextToBox2(string input)
@@ -97,8 +107,8 @@ namespace ProjectSMTPLocalHost
         }
         private bool checkAccounts()
         {
-            string strFrom = txtBoxFrom.Text.Trim();
-            string strTo = txtBoxTo.Text.Trim();
+            string strFrom = txtBoxMailFrom.Text.Trim();
+            string strTo = txtBoxMailTo.Text.Trim();
             //create regular express to find a char is NOT allow to contain in email(Ex: #$%..)
             Regex RgxEmail = new Regex("[^a-zA-Z0-9@._-]");
             if (string.IsNullOrEmpty(strFrom) || string.IsNullOrEmpty(strTo) || string.IsNullOrEmpty(txtBoxPwd.Text.Trim()))
@@ -118,6 +128,30 @@ namespace ProjectSMTPLocalHost
         {
             sw.WriteLine(data);
             sw.Flush();
+        }
+
+        private void btnAttach_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.ShowDialog();
+                filePath[index] = ofd.FileName;
+                fileName[index] = ofd.SafeFileName;
+                lblAttach.Text += " " + fileName[index];
+                index++;
+            }
+            catch
+            {
+                MessageBox.Show("Vui lòng chọn file");
+            }
+        }
+
+        private void bttnClrAttach_Click(object sender, EventArgs e)
+        {
+            Array.Clear(filePath, 0, filePath.Length);
+            Array.Clear(fileName, 0, fileName.Length);
+            lblAttach.Text = "Attachments:";
         }
 
         private void btnSend_Click(object sender, EventArgs e)
@@ -152,8 +186,8 @@ namespace ProjectSMTPLocalHost
                 return;
             }
             //get mail domain
-            int index = txtBoxFrom.Text.Trim().IndexOf('@');
-            string domain = txtBoxFrom.Text.Trim().Substring(index + 1);
+            int index = txtBoxMailFrom.Text.Trim().IndexOf('@');
+            string domain = txtBoxMailFrom.Text.Trim().Substring(index + 1);
             try
             {
                 //step to send mail
@@ -166,7 +200,7 @@ namespace ProjectSMTPLocalHost
                 addTextToBox2(data);
                 sendMess(data);
 
-                data = inforToBase64(txtBoxFrom.Text);
+                data = inforToBase64(txtBoxMailFrom.Text);
                 addTextToBox2(data);
                 sendMess(data);
 
@@ -175,12 +209,11 @@ namespace ProjectSMTPLocalHost
                 sendMess(data);
 
 
-
-                data = "MAIL FROM:<" + txtBoxFrom.Text + ">";
+                data = "MAIL FROM:<" + txtBoxMailFrom.Text + ">";
                 addTextToBox2(data);
                 sendMess(data);
 
-                data = "RCPT TO:<" + txtBoxTo.Text + ">";
+                data = "RCPT TO:<" + txtBoxMailTo.Text + ">";
                 addTextToBox2(data);
                 sendMess(data);
 
@@ -205,42 +238,89 @@ namespace ProjectSMTPLocalHost
                     addTextToBox2(data);
                     sendMess(data);
 
-                    data = "FROM:<" + txtBoxFrom.Text + ">";
+                    data = "FROM: =?utf-8?B?" + inforToBase64(txtBoxNameFrom.Text) + "?= <" + txtBoxMailFrom.Text + ">";
                     addTextToBox2(data);
                     sendMess(data);
 
-                    data = "TO:<" + txtBoxTo.Text + ">";
+                    data = "TO: =?utf-8?B?" + inforToBase64(txtBoxNameTo.Text) + "?= <" + txtBoxMailTo.Text + ">";
                     addTextToBox2(data);
                     sendMess(data);
 
-                    data = "Content-Type: text/plain; charset=\"UTF-8\"";//this make Vietnamese mail can be sent
+                    data = "Subject: =?utf-8?B?" + inforToBase64(txtBoxSubject.Text) + "?=";
                     addTextToBox2(data);
                     sendMess(data);
 
-                    data = "subject: " + txtBoxSubject.Text;
+                    data = "MIME-Version: 1.0";
+                    addTextToBox2(data);
+                    sendMess(data);
+
+                    data = "Content-Type: multipart/mixed; boundary=\"boundary_ranh_gioi\"";
                     addTextToBox2(data);
                     sendMess(data);
 
                     addTextToBox2("");
                     sendMess("");
+
+                    data = "--boundary_ranh_gioi";
+                    addTextToBox2(data);
+                    sendMess(data);
+
+                    data = "Content-Type: text/plain; charset=\"UTF-8\"";
+                    addTextToBox2(data);
+                    sendMess(data);
+
+                    data = "Content-Transfer-Encoding: base64";
+                    addTextToBox2(data);
+                    sendMess(data);
+
+                    addTextToBox2("");
+                    sendMess("");
+
                     data = richTBBody.Text;
 
-                    if (data.Contains("\n"))
-                    {
-                        string[] newData = data.Split('\n');
-                        foreach (string stringLine in newData)
-                        {
-                            addTextToBox2(stringLine);
-                            sendMess(stringLine);
-                        }
-                    }
-                    else
-                    {
-                        addTextToBox2(data);
-                        sendMess(data);
-                    }
+                    addTextToBox2(data);
+                    sendMess(inforToBase64(data));
+
                     addTextToBox2("");
                     sendMess("");
+
+                    for (int i = 0; i < filePath.Length; i++)
+                    {
+                        if (!string.IsNullOrEmpty(filePath[i]))
+                        {
+                            string path = filePath[i];
+                            // attachment 1 file
+                            data = "--boundary_ranh_gioi";
+                            addTextToBox2(data);
+                            sendMess(data);
+
+                            data = "Content-Type: file --mime-type -b mortal_combat.jpg; name=" +fileName[i];
+                            addTextToBox2(data);
+                            sendMess(data);
+
+                            data = "Content-Transfer-Encoding: base64";
+                            addTextToBox2(data);
+                            sendMess(data);
+
+                            data = "Content-Disposition: attachment; filename=" + fileName[i];
+                            addTextToBox2(data);
+                            sendMess(data);
+
+                            addTextToBox2("");
+                            sendMess("");
+
+                            addTextToBox2("Attachment - File: " + path);
+                            sendMess(fileToBase64(path));
+
+                            addTextToBox2("");
+                            sendMess("");
+
+
+                            data = "--boundary_ranh_gioi--";
+                            addTextToBox2(data);
+                            sendMess(data);
+                        }
+                    }
 
                     addTextToBox2(".");
                     sendMess(".");
