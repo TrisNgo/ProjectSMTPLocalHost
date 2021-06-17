@@ -274,7 +274,8 @@ namespace ProjectSMTPLocalHost
             // 
             this.lblAttach.AutoSize = true;
             this.lblAttach.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAttach.Location = new System.Drawing.Point(729, 667);
+            this.lblAttach.Location = new System.Drawing.Point(724, 670);
+            this.lblAttach.MaximumSize = new System.Drawing.Size(500, 0);
             this.lblAttach.Name = "lblAttach";
             this.lblAttach.Size = new System.Drawing.Size(84, 16);
             this.lblAttach.TabIndex = 25;
@@ -282,7 +283,7 @@ namespace ProjectSMTPLocalHost
             // 
             // bttnClrAttach
             // 
-            this.bttnClrAttach.Location = new System.Drawing.Point(1137, 660);
+            this.bttnClrAttach.Location = new System.Drawing.Point(587, 702);
             this.bttnClrAttach.Name = "bttnClrAttach";
             this.bttnClrAttach.Size = new System.Drawing.Size(120, 36);
             this.bttnClrAttach.TabIndex = 26;

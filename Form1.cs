@@ -294,7 +294,7 @@ namespace ProjectSMTPLocalHost
                             addTextToBox2(data);
                             sendMess(data);
 
-                            data = "Content-Type: file --mime-type -b mortal_combat.jpg; name=" +fileName[i];
+                            data = "Content-Type: file --mime-type -b "+ fileName[i]+ "; name=" +fileName[i];
                             addTextToBox2(data);
                             sendMess(data);
 
