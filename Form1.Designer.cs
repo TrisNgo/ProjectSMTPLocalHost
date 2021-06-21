@@ -53,6 +53,7 @@ namespace ProjectSMTPLocalHost
             this.btnAttach = new System.Windows.Forms.Button();
             this.lblAttach = new System.Windows.Forms.Label();
             this.bttnClrAttach = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // lblApp
@@ -161,7 +162,7 @@ namespace ProjectSMTPLocalHost
             // btnSend
             // 
             this.btnSend.Font = new System.Drawing.Font("Constantia", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSend.Location = new System.Drawing.Point(1016, 737);
+            this.btnSend.Location = new System.Drawing.Point(1016, 797);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(217, 48);
             this.btnSend.TabIndex = 7;
@@ -291,11 +292,25 @@ namespace ProjectSMTPLocalHost
             this.bttnClrAttach.UseVisualStyleBackColor = true;
             this.bttnClrAttach.Click += new System.EventHandler(this.bttnClrAttach_Click);
             // 
+            // comboBox1
+            // 
+            this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Mdaemon",
+            "Hmail Server",
+            "Self-build Server"});
+            this.comboBox1.Location = new System.Drawing.Point(587, 773);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(175, 28);
+            this.comboBox1.TabIndex = 27;
+            // 
             // FrmSmtpLocal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1280, 797);
+            this.ClientSize = new System.Drawing.Size(1280, 857);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.bttnClrAttach);
             this.Controls.Add(this.lblAttach);
             this.Controls.Add(this.btnAttach);
@@ -354,6 +369,7 @@ namespace ProjectSMTPLocalHost
         private System.Windows.Forms.Button btnAttach;
         private System.Windows.Forms.Label lblAttach;
         private System.Windows.Forms.Button bttnClrAttach;
+        private System.Windows.Forms.ComboBox comboBox1;
     }
 }
 

@@ -12,6 +12,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace ProjectSMTPLocalHost
 {
@@ -27,6 +28,8 @@ namespace ProjectSMTPLocalHost
         StreamReader sr;
         StreamWriter sw;
 
+        long time;
+
         //Biến global isAuthen dùng để kiểm tra việc xác thực có Ok không
         //Biến stop dùng để ra tính hiệu cho việc ngừng thread
         bool isAuthen = true;
@@ -39,6 +42,7 @@ namespace ProjectSMTPLocalHost
         public FrmSmtpLocal()
         {
             InitializeComponent();
+            comboBox1.SelectedIndex = 0;
         }
         private string inforToBase64(string input)
         {
@@ -60,7 +64,7 @@ namespace ProjectSMTPLocalHost
             txtBoxSendSer.Text += text;
         }
 
-        //kiểm tra authen cũng như xuất thông tin lên txtBoxGetSer
+        //Authentication
         private void authenCheck(string input)
         {
             string text = "S: " + input + "\n";
@@ -74,9 +78,19 @@ namespace ProjectSMTPLocalHost
             }
             else
             {
-                count = count + 1;
+                count++;
             }
-            if (count == 13)
+            if (comboBox1.SelectedIndex == 0 && count == 13) //if the server is using is mdaemon
+            {
+                stop = true;
+                return;
+            }
+            else if (comboBox1.SelectedIndex == 1 && count == 10) //if the server is using is hmail
+            {
+                stop = true;
+                return;
+            }
+            else if (comboBox1.SelectedIndex == 2 && count == 7) ////if the server is using is self-build server
             {
                 stop = true;
                 return;
@@ -87,9 +101,9 @@ namespace ProjectSMTPLocalHost
         {
             string text = "S: " + input + "\n";
             txtBoxGetSer.Text += text;
-            if (input.Contains("saved"))
+            if ((comboBox1.SelectedIndex == 2 && input.StartsWith("221")) || (comboBox1.SelectedIndex == 1 && input.StartsWith("354")) || (comboBox1.SelectedIndex == 0 && input.StartsWith("221")))
             {
-                MessageBox.Show("Gửi mail thành công", "Thông báo");
+                MessageBox.Show("Gửi mail thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 listenThd.Abort();
             }
         }
@@ -118,7 +132,7 @@ namespace ProjectSMTPLocalHost
             }
             else if (!strFrom.Contains('@') || !strTo.Contains('@') || RgxEmail.IsMatch(strFrom) || RgxEmail.IsMatch(strTo))
             {
-                MessageBox.Show("Mail tài khoản gửi và nhận đã nhập sai. Nhập lại");
+                MessageBox.Show("Mail tài khoản gửi và nhận đã nhập sai. Nhập lại", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             return true;
@@ -216,7 +230,7 @@ namespace ProjectSMTPLocalHost
                 addTextToBox2(data);
                 sendMess(data);
 
-                //Đợi việc xác thực xong mới gửi mail
+                //Wait for the authen to complete
                 authenThd.Join();
                 if (isAuthen)
                 {
@@ -328,19 +342,19 @@ namespace ProjectSMTPLocalHost
                     addTextToBox2(data);
                     sendMess(data);
 
-                    //Đợi máy chủ trả về kết quả xong, tránh trường hợp máy chủ chưa trả về xong mà xuống dưới đã đóng Stream
+                    // Wait for the server to complete the process. After that close all stream
                     listenThd.Join();
                 }
                 else
                 {
-                    MessageBox.Show("Xác thực không thành công, Mail không gửi được!", "Lỗi xác thực");
+                    MessageBox.Show("Xác thực không thành công, Mail không gửi được!", "Lỗi xác thực", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                //Cho các giá trị về mặc định để chuẩn bị cho lần gửi mail tiếp theo
+                //Set all the value to default, ready for the next action
                 stop = false;
                 isAuthen = true;
                 count = 0;
-                authenThd.Abort();
+                //if (authenThd.IsAlive) authenThd.Abort();
                 sw.Close();
                 sr.Close();
                 tcpClient.Close();
@@ -355,17 +369,29 @@ namespace ProjectSMTPLocalHost
         //Hàm kiểm tra xem server có xác thực được thông tin của user không
         private void authenMess()
         {
+            var watch = new System.Diagnostics.Stopwatch();
+            watch.Start();
             //get reply message from mailserver
             while (true)
             {
-                string mess = "";
-                mess = sr.ReadLine();
-                if (string.IsNullOrEmpty(mess))//if server do not send any message(serverproblem) ,break it and stop thread, tcp connection
+                if (watch.ElapsedMilliseconds > 5000)
                 {
-                    tcpClient.Close();
-                    break;
+                    time = watch.ElapsedMilliseconds;
+                    MessageBox.Show("Có lỗi xảy ra, vui lòng kiểm tra xem bạn đã chọn đúng loại server hay chưa! Việc chọn sai server bạn đang sử dụng có thể khiến cho chương trình không thể nhận chính xác phản hồi từ máy chủ!", "Lỗi");
+                    isAuthen = false;
+                    stop = true;
                 }
-                authenCheck(mess);
+                else
+                {
+                    string mess = "";
+                    mess = sr.ReadLine();
+                    if (string.IsNullOrEmpty(mess))//if server do not send any message(serverproblem) ,break it and stop thread, tcp connection
+                    {
+                        tcpClient.Close();
+                        break;
+                    }
+                    authenCheck(mess);
+                }
                 if (stop == true) break;
             }
         }
