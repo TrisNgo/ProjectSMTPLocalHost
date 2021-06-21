@@ -161,7 +161,7 @@ namespace ProjectSMTPLocalHost
             // btnSend
             // 
             this.btnSend.Font = new System.Drawing.Font("Constantia", 27.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSend.Location = new System.Drawing.Point(1026, 737);
+            this.btnSend.Location = new System.Drawing.Point(1016, 737);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(217, 48);
             this.btnSend.TabIndex = 7;

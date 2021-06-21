@@ -153,7 +153,6 @@ namespace ProjectSMTPLocalHost
             Array.Clear(fileName, 0, fileName.Length);
             lblAttach.Text = "Attachments:";
         }
-
         private void btnSend_Click(object sender, EventArgs e)
         {
             //if txtBoxSendSer and txtBoxGetSer have already text on previous sending, clear it
