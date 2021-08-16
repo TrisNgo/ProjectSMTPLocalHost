@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "client-SMTP-Local", "client-SMTP-Local.csproj", "{1DF457AD-B8F3-41D2-9816-71CFE32473D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server-SMTP-Local", "..\LTMCB_Nhom8_NT106.L21.ATCL\LocalSMTP2\SMTPServer\SMTPServer\server-SMTP-Local.csproj", "{A1E319BD-5752-453F-9B92-A1AF33BC1447}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server-SMTP-Local", "sever-SMTP-Local\server-SMTP-Local.csproj", "{A1E319BD-5752-453F-9B92-A1AF33BC1447}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
